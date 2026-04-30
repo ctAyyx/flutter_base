@@ -46,7 +46,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             isLoading: uiState == HomeUiState.loading,
             child: RefreshIndicator(
               onRefresh: () async {
-                await ref.read(homeViewModel.notifier).onRefresh(1);
+                await ref.read(homeViewModel.notifier).onRefresh(0);
               },
               child: CustomScrollView(
                 controller: _scrollController,
@@ -127,7 +127,7 @@ class _HomeTopWidget extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text("初始态UI"),
-              Text("ppppppppppp:${homeVo?.applyState}"),
+              Text("ppppppppppp:${homeVo?.applyState} -${homeVo?.appVersion}"),
             ],
           ),
         ),

@@ -1,0 +1,7 @@
+import 'native_bridge_platform_interface.dart';
+
+class NativeBridge {
+  static Future<String> getPlatformVersion() {
+    return NativeBridgePlatform.instance.getPlatformVersion();
+  }
+}
