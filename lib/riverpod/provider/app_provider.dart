@@ -4,4 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final appRouterProvider = Provider((_) => AppRouter());
 
-final apiServiceProvider = Provider((_) => ApiService());
+
+
+
