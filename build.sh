@@ -38,7 +38,7 @@ check_fvm(){
           FLUTTER_CMD="fvm flutter"
           execute_step "使用 FVM 切换到项目版本" "fvm use"
       else
-          echo -e "${COLOR_YELLOW}==>>未检测到FVM环境或FlutterVersion。将使用 Flutter命令。${COLOR_NC}"
+          echo -e "${COLOR_YELLOW}==>>未检测到FVM环境。将使用 Flutter命令。${COLOR_NC}"
       fi
   else
       echo -e "${COLOR_CYAN}==>> 未检测到FVM环境。将使用 Flutter命令。${COLOR_NC}"
@@ -60,6 +60,11 @@ do_get(){
 }
 do_build(){
   execute_step "执行 pub run build_runner" "${FLUTTER_CMD} pub run build_runner build --delete-conflicting-outputs"
+}
+
+do_plugin(){
+  local  final_args=${ARGS:-"native_plugin"}
+  execute_step "执行构建插件操作" "${FLUTTER_CMD}  create --template=plugin --platforms=android,ios $final_args"
 }
 do_apk(){
   echo "--- 构建 Release 版本 ---"
@@ -88,6 +93,7 @@ do_base(){
 }
 
 MODE=$1
+ARGS=$2
 if [ "$MODE" == "build" ]; then
     check_fvm
     do_build
@@ -99,6 +105,9 @@ elif [ "$MODE" == "apk" ] ; then
     do_base
     do_apk
     echo -e "${COLOR_GREEN}>>> 打包完成 <<<${COLOR_NC}"
+elif [ "$MODE" == "plugin" ]; then
+    do_plugin
+    echo -e "${COLOR_GREEN}>>> 构建插件完成 <<<${COLOR_NC}"
 else
    do_base
    do_apk

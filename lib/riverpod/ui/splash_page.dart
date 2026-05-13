@@ -15,7 +15,7 @@ class SplashPage extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 48,),
-            SubmitButton(
+            SubmitButton.general(
               text: "登录界面",
               onClick: () {
                 context.pushRoute(LoginRoute());

@@ -13,6 +13,8 @@ class BaseResponse<T> {
 
   BaseResponse({this.data, this.msg, this.code});
 
+  bool isSuccess() => code == 200;
+
   factory BaseResponse.fromJson(
     Map<String, dynamic> json,
     T Function(Object? json) fromJsonT,
