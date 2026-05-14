@@ -12,6 +12,10 @@ class BaseController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    initLoading();
+  }
+
+  void initLoading() {
     ever(_loadingCount, (count) {
       isLoadingObx.value = count > 0;
     });
@@ -20,6 +24,7 @@ class BaseController extends GetxController {
   Future<T?> request<T>({
     required Future<T?> future,
     bool showLoading = true,
+    Function(int? code, String? msg)? onError,
   }) async {
     try {
       if (showLoading) {
@@ -27,15 +32,23 @@ class BaseController extends GetxController {
       }
       return await future;
     } catch (e) {
+      int? code;
+      String? errorMsg;
       switch (e) {
-        case ApiException e:
+        case ApiException _:
+          code = e.code;
+          errorMsg = e.msg;
           break;
-        case DioException e:
+        case DioException _:
+          code = -1;
+          errorMsg = "Network Error";
           break;
         default:
           break;
       }
-      debugPrint("异常:$e");
+      if (onError != null) {
+        onError(code, errorMsg);
+      }
       return null;
     } finally {
       if (showLoading) {

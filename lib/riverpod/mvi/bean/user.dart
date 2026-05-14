@@ -9,4 +9,5 @@ class UserVo {
   UserVo({required this.phone, required this.pwd});
 
   factory UserVo.fromJson(Map<String, dynamic> json) => _$UserVoFromJson(json);
+  Map<String, dynamic> toJson() => _$UserVoToJson(this);
 }

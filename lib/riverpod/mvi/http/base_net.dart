@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_base/common/misty_util.dart';
 import 'package:flutter_base/riverpod/mvi/http/api_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,6 +36,13 @@ class HeaderInterceptor extends Interceptor {
 class DecAndEndTransformer extends BackgroundTransformer {
   @override
   Future<String> transformRequest(RequestOptions options) {
+    final data = options.data;
+    if (data is String) {
+      options.data = data.encrypt();
+    }
+    if (data is List || data is Map) {
+      options.data = jsonEncode(data).encrypt();
+    }
     return super.transformRequest(options);
   }
 
@@ -40,7 +50,9 @@ class DecAndEndTransformer extends BackgroundTransformer {
   Future<dynamic> transformResponse(
     RequestOptions options,
     ResponseBody responseBody,
-  ) {
-    return super.transformResponse(options, responseBody);
+  ) async {
+    final stream = responseBody.stream;
+    final parameter = await utf8.decodeStream(stream);
+    return parameter.decrypt();
   }
 }

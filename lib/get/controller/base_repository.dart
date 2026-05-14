@@ -9,14 +9,13 @@ class ApiException implements Exception {
 
   @override
   String toString() {
-    return "$code:$msg";
+    return msg ?? "";
   }
 }
 
 class BaseRepository {
   Future<T?> request<T>(Future<BaseResponse<T>> future) async {
     final resp = await future;
-    debugPrint("===>$resp");
     if (resp.isSuccess()) {
       return resp.data;
     }

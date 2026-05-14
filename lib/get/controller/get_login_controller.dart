@@ -16,10 +16,18 @@ class LoginController extends BaseController {
 
   Future<UserVo?> login() async {
     loginErrorInfo.value = "";
-    final result = await request(showLoading: true,future: repository.login(phone: phoneController.text, pwd: pwdController.text));
-    if (result == null) {
-      loginErrorInfo.value = "登录失败";
-    }
+    final result = await request(
+      showLoading: true,
+      future: repository.login(
+        phone: phoneController.text,
+        pwd: pwdController.text,
+      ),
+      onError: (_, msg) {
+        if (msg != null) {
+          loginErrorInfo.value = msg;
+        }
+      },
+    );
     return result;
   }
 

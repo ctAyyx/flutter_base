@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_base/get/http/log_interceptor.dart';
 import 'package:flutter_base/riverpod/mvi/http/api_service.dart';
@@ -17,10 +20,22 @@ class ApiWorker {
     final headerInterceptor = HeaderInterceptor();
     dio.interceptors.add(headerInterceptor);
     if (kDebugMode) {
-      dio.interceptors.add(LogInterceptor());
+      dio.interceptors.add(ILogInterceptor());
     }
     final transformer = DecAndEndTransformer();
+    //configProxy(dio);
     dio.transformer = transformer;
     return ApiService(dio);
+  }
+
+  static void configProxy(
+    Dio dio, {
+    String proxyUrl = "PROXY 192.168.30.69:8888",
+  }) {
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () => HttpClient()
+        ..findProxy = ((uri) => proxyUrl)
+        ..badCertificateCallback = ((_, _, _) => true),
+    );
   }
 }

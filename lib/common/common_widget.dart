@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsetsGeometry.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        child: const CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
 class LoadingContainer extends StatelessWidget {
   final bool? isLoading;
   final Widget child;
@@ -17,16 +35,7 @@ class LoadingContainer extends StatelessWidget {
             child: AbsorbPointer(
               child: Container(
                 color: Colors.black.withValues(alpha: 0.6),
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsetsGeometry.all(24),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                    child: const CircularProgressIndicator(),
-                  ),
-                ),
+                child: const LoadingWidget(),
               ),
             ),
           ),
@@ -171,5 +180,22 @@ class SubmitButton extends StatelessWidget {
         child: Center(child: Text(text, style: textStyle)),
       ),
     );
+  }
+}
+
+class Interval extends StatelessWidget {
+  const Interval({super.key});
+
+  factory Interval.horizontal({double width = 1}) {
+    return Interval();
+  }
+
+  factory Interval.vertical({double width = 1}) {
+    return Interval();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

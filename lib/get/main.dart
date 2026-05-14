@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/get/app_binding.dart';
 import 'package:flutter_base/get/app_routers.dart';
@@ -12,6 +14,7 @@ final RouteObserver<PageRoute> appRouterObserver = RouteObserver<PageRoute>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // runApp(DevicePreview(enabled: !kReleaseMode, builder: (_) => const MyApp()));
   runApp(const MyApp());
 }
 
@@ -47,6 +50,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      // 测试模式
+      // useInheritedMediaQuery: true,
+      // locale: DevicePreview.locale(context),
+      // builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
       title: "GetX MVC",
       initialBinding: AppBinding(),

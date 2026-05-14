@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base/common/common_widget.dart';
 import 'package:flutter_base/get/controller/get_login_controller.dart';
+import 'package:flutter_base/web/web.dart';
 import 'package:get/get.dart';
+
+import '../../common/user_manager.dart';
 
 class GetLoginPage extends StatefulWidget {
   const GetLoginPage({super.key});
@@ -35,11 +38,42 @@ class _GetLoginPageState extends State<GetLoginPage> {
             TextField(controller: _controller.phoneController),
             TextField(controller: _controller.pwdController),
             SubmitButton.general(text: "提交", onClick: _controller.login),
+            SizedBox(height: 16),
+            SubmitButton.general(
+              text: "登录成功",
+              onClick: () {
+                UserManager.instance.login();
+              },
+            ),
+            SizedBox(height: 16),
+            SubmitButton.general(
+              text: "登录失败",
+              onClick: () {
+                UserManager.instance.logout();
+              },
+            ),
+            SizedBox(height: 16),
+            SubmitButton.general(
+              text: "网页测试",
+              onClick: () {
+                IWebView.start(
+                  url: "https://www.baidu.com",
+                  params: {"BB": "cc"},
+                );
+              },
+            ),
             Obx(() {
               if (_controller.loginErrorInfo.value.isNotEmpty) {
                 return Text(_controller.loginErrorInfo.value);
               } else {
                 return SizedBox.shrink();
+              }
+            }),
+            Obx(() {
+              if (UserManager.instance.loginStatus.value == LoginStatus.login) {
+                return Text("用户登录成功");
+              } else {
+                return Text("用户退出登录");
               }
             }),
           ],
