@@ -21,7 +21,7 @@ class LoadingWidget extends StatelessWidget {
 
 class LoadingContainer extends StatelessWidget {
   final bool? isLoading;
-  final Widget child;
+  final Widget? child;
 
   const LoadingContainer({super.key, this.isLoading, required this.child});
 
@@ -29,7 +29,7 @@ class LoadingContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        child,
+        ?child,
         if (isLoading == true)
           Positioned.fill(
             child: AbsorbPointer(

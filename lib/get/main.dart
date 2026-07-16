@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
       title: "GetX MVC",
       initialBinding: AppBinding(),
       navigatorObservers: [GetPageRouterObserver(), appRouterObserver],
-      initialRoute: AppRouters.login,
+      initialRoute: AppRouters.init,
       getPages: AppRouters.routers,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

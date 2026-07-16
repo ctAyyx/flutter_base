@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_base/common/log_util.dart';
 import 'package:flutter_base/get/controller/base_repository.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +14,12 @@ class BaseController extends GetxController {
   void onInit() {
     super.onInit();
     initLoading();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    LogUtil.log("===>>>Controller Close:$runtimeType");
   }
 
   void initLoading() {

@@ -9,6 +9,7 @@ class GetLoginRepository extends BaseRepository {
 
   Future<UserVo?> login({required String phone, required String pwd}) async {
     await Future.delayed(Duration(seconds: 3));
+    await apiService.requestHomeInfo();
     return request(apiService.login({"phone": phone, "pwd": pwd}));
   }
 }

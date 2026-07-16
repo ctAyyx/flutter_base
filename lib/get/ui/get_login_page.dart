@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base/common/common_widget.dart';
+import 'package:flutter_base/get/app_routers.dart';
 import 'package:flutter_base/get/controller/get_login_controller.dart';
 import 'package:flutter_base/web/web.dart';
 import 'package:get/get.dart';
@@ -43,6 +44,7 @@ class _GetLoginPageState extends State<GetLoginPage> {
               text: "登录成功",
               onClick: () {
                 UserManager.instance.login();
+                toHome(clearTask: false, targetIndex: 1);
               },
             ),
             SizedBox(height: 16),

@@ -30,48 +30,50 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final uiState = ref.watch(homeViewModel.select((state) => state.uiState));
-
     ref.listen(homeTimer, (_, next) {
       if (next.uiState == HomeTimerUiState.reLoad) {
         ref.read(homeViewModel.notifier).onRefresh(1);
       }
     });
 
-    return LayoutBuilder(
-      builder: (buildContext, constraints) {
-        return SafeArea(
-          top: false,
-          child: LoadingContainer(
+    return SafeArea(
+      top: false,
+      child: Consumer(
+        builder: (context, ref, child) {
+          final uiState = ref.watch(
+            homeViewModel.select((state) => state.uiState),
+          );
+          return LoadingContainer(
             isLoading: uiState == HomeUiState.loading,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await ref.read(homeViewModel.notifier).onRefresh(0);
-              },
-              child: CustomScrollView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const _HomeTopWidget(),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  ),
-
-                  const SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: _HomeBottomWidget(),
-                  ),
-                ],
+            child: child,
+          );
+        },
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await ref.read(homeViewModel.notifier).onRefresh(0);
+          },
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const _HomeTopWidget(),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
-            ),
+
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: _HomeBottomWidget(),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

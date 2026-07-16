@@ -43,6 +43,11 @@ dependencies:
   webview_flutter: ^4.13.1
   file_picker: ^11.0.2
   device_preview: ^1.3.1
+  image: ^4.8.0
+  path_provider: ^2.1.5
+  talker_flutter: ^5.1.15
+  talker_dio_logger: ^5.1.15
+  encrypt: ^5.0.1
   native_bridge:
     path: native_bridge
 

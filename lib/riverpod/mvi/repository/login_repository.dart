@@ -8,6 +8,7 @@ class LoginRepository {
 
   Future<UserVo> login(String phone, String pwd) async {
     await Future.delayed(Duration(seconds: 3));
+    await apiService.requestHomeInfo();
     return UserVo(phone: phone, pwd: pwd);
   }
 }

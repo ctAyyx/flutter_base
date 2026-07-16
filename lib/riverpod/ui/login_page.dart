@@ -34,10 +34,112 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   debugPrint("重组LoginPage");
+  //   ref.listen(loginViewModel, (pre, next) async {
+  //     switch (next.uiState) {
+  //       case LoginUiState.loginSuccess:
+  //         final result = await PopupHelper.showLoginSuccessDialog(
+  //           context: context,
+  //         );
+  //         if (result == true && context.mounted) {
+  //           context.router.replaceAll([MainRoute()]);
+  //         }
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   });
+  //
+  //   return Consumer(
+  //     builder: (context, ref, child) {
+  //       final uiState = ref.watch(
+  //         loginViewModel.select((state) => state.uiState),
+  //       );
+  //       return LoadingContainer(
+  //         isLoading: uiState == LoginUiState.loading,
+  //         child: child,
+  //       );
+  //     },
+  //     child: Scaffold(
+  //       appBar: AppBar(title: Text("注册登录")),
+  //       body: Column(
+  //         children: [
+  //           Container(
+  //             margin: const EdgeInsets.symmetric(horizontal: 24),
+  //             decoration: BoxDecoration(
+  //               border: BoxBorder.all(color: Colors.red, width: 1),
+  //               borderRadius: BorderRadius.circular(8),
+  //             ),
+  //             child: TextField(
+  //               controller: _phoneController,
+  //               cursorColor: Colors.amber,
+  //               cursorRadius: Radius.circular(2),
+  //               decoration: InputDecoration(
+  //                 border: InputBorder.none,
+  //
+  //                 isDense: true,
+  //                 contentPadding: EdgeInsets.symmetric(
+  //                   vertical: 12,
+  //                   horizontal: 16,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           const SizedBox(height: 16),
+  //           Container(
+  //             margin: const EdgeInsets.symmetric(horizontal: 24),
+  //             decoration: BoxDecoration(
+  //               border: BoxBorder.all(color: Colors.red, width: 1),
+  //               borderRadius: BorderRadius.circular(8),
+  //             ),
+  //             child: TextField(
+  //               controller: _pwdController,
+  //               cursorColor: Colors.amber,
+  //               cursorRadius: Radius.circular(2),
+  //               decoration: InputDecoration(
+  //                 border: InputBorder.none,
+  //
+  //                 isDense: true,
+  //                 contentPadding: EdgeInsets.symmetric(
+  //                   vertical: 12,
+  //                   horizontal: 16,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           const SizedBox(height: 16),
+  //           SubmitButton.general(
+  //             text: "提交",
+  //             onClick: () {
+  //               final viewModel = ref.read(loginViewModel.notifier);
+  //               viewModel.login(
+  //                 phone: _phoneController.text,
+  //                 pwd: _pwdController.text,
+  //               );
+  //             },
+  //           ),
+  //           const SizedBox(height: 16),
+  //           Consumer(
+  //             builder: (context, ref, child) {
+  //               final user = ref.watch(
+  //                 loginViewModel.select((state) => state.user),
+  //               );
+  //               return Text("登录的用户信息:${user?.phone} - ${user?.pwd}");
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+
   @override
   Widget build(BuildContext context) {
+    debugPrint("重组LoginPage");
     final loginState = ref.watch(loginViewModel);
-
     ref.listen(loginViewModel, (pre, next) async {
       switch (next.uiState) {
         case LoginUiState.loginSuccess:
@@ -59,9 +161,51 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         appBar: AppBar(title: Text("注册登录")),
         body: Column(
           children: [
-            TextField(controller: _phoneController),
-            TextField(controller: _pwdController),
-            SubmitButton(
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              decoration: BoxDecoration(
+                border: BoxBorder.all(color: Colors.red, width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextField(
+                controller: _phoneController,
+                cursorColor: Colors.amber,
+                cursorRadius: Radius.circular(2),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              decoration: BoxDecoration(
+                border: BoxBorder.all(color: Colors.red, width: 1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextField(
+                controller: _pwdController,
+                cursorColor: Colors.amber,
+                cursorRadius: Radius.circular(2),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SubmitButton.general(
               text: "提交",
               onClick: () {
                 final viewModel = ref.read(loginViewModel.notifier);
@@ -71,6 +215,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 );
               },
             ),
+            const SizedBox(height: 16),
             Text("登录的用户信息:${loginState.user?.phone} - ${loginState.user?.pwd}"),
           ],
         ),
