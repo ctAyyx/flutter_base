@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_base/log/log_manager.dart';
 import 'package:flutter_base/riverpod/mvi/bean/option_item.dart';
 import 'package:flutter_base/riverpod/mvi/state/credit_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +14,7 @@ final itemNotifier = Provider.family<OptionItem?, String>((ref, id) {
   return ref.watch(
     creditViewModel.select(
       (state) => state.options?.firstWhereOrNull((e) {
-        debugPrint("筛选数据ItemNotifier：$e");
+        LogManager.logI("筛选数据ItemNotifier：$e");
         return e.id == id;
       }),
     ),

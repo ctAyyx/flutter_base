@@ -10,7 +10,11 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  LogManager.instance.init(isDebug: true);
+  LogManager.init(
+    isDebug: true,
+    fsApi:
+        "https://open.feishu.cn/open-apis/bot/v2/hook/ebda5db2-b186-4c0a-8c1a-0751a3d8ab36",
+  );
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -26,7 +30,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LogManager.instance.showFloatButton(navigatorKey.currentState?.overlay);
+      LogManager.showFloatButton(navigatorKey.currentState?.overlay);
     });
   }
 
@@ -46,21 +50,19 @@ class AppRouterObserver extends AutoRouterObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
 
-    LogManager.instance.logW(
-      "Router:进入界面:${route.settings.name} -${route.runtimeType}",
-    );
+    LogManager.logI("Router:进入界面:${route.settings.name} -${route.runtimeType}");
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
-    LogManager.instance.logW("Router:离开界面:${route.settings.name}");
+    LogManager.logW("Router:离开界面:${route.settings.name}");
   }
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    LogManager.instance.logW("Router:替换界面:${newRoute?.settings.name}");
+    LogManager.logW("Router:替换界面:${newRoute?.settings.name}");
   }
 
   @override

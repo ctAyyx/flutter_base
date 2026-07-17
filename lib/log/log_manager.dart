@@ -2,87 +2,67 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_base/log/float_button.dart';
+import 'package:flutter_base/log/util/time_util.dart';
 
-enum LogLevel { info, warning, error }
+enum LogLevel {
+  info(key: "I:"),
+  warning(key: "W:"),
+  error(key: "E:"),
+  httpRequest(key: "[HTTP请求]"),
+  httpResponse(key: "[HTTP响应]"),
+  httpError(key: "[HTTP错误]");
+
+  final String key;
+
+  const LogLevel({required this.key});
+}
 
 class LogEntity {
   final String message;
   final LogLevel level;
-  final DateTime time;
+  final String time;
 
-  LogEntity(this.message, this.level) : time = DateTime.now();
-
-  String getFormatTime() {
-    String year = time.year.toString();
-    String month = time.month.toString().padLeft(2, '0');
-    String day = time.day.toString().padLeft(2, '0');
-
-    String hour = time.hour.toString().padLeft(2, '0');
-    String minute = time.minute.toString().padLeft(2, '0');
-    String second = time.second.toString().padLeft(2, '0');
-    // 毫秒是3位数，所以用 padLeft(3, '0')
-    String millisecond = time.millisecond.toString().padLeft(3, '0');
-
-    String formatted = "$year-$month-$day $hour:$minute:$second:$millisecond";
-
-    return formatted;
-  }
+  LogEntity(this.message, this.level)
+    : time = TimeUtil.getFormatTime(DateTime.now());
 
   String getRMessage() {
-    RegExp regExp = RegExp(r"^(W:|I:|E:)");
+    RegExp regExp = RegExp(r"^(W:|I:|E:|N:)");
     return message.replaceFirst(regExp, "");
   }
 }
 
 class LogManager {
-  final String _ansiReset = '\x1b[0m';
-
-  // 常用的前景色（文字颜色）
-  final String _ansiWhite = '\x1b[37m';
-  final String _ansiRed = '\x1b[31m'; // 红色：用于 Error
-  final String _ansiYellow = '\x1b[33m'; // 黄色：用于 Warning
-  final String _ansiGreen = '\x1b[32m'; // 绿色：用于 Response 成功
-  final String _ansiCyan = '\x1b[36m'; // 青色：用于 Request 请求
-
-  static final LogManager instance = LogManager._();
-  bool isDebug = false;
-  String? _fsApi =
-      "https://open.feishu.cn/open-apis/bot/v2/hook/ebda5db2-b186-4c0a-8c1a-0751a3d8ab36";
-
   LogManager._();
 
-  void showFloatButton(OverlayState? overlayState) {
+  static bool isDebug = false;
+  static final int maxLogs = 500;
+
+  // 重置为系统颜色
+  static final String _ansiReset = '\x1b[0m';
+  // 普通日志颜色 蓝色
+  static final String _ansiBlue = '\x1b[34m';
+  // 错误日志颜色 红色
+  static final String _ansiRed = '\x1b[31m';
+  // 警告日志颜色 黄色
+  static final String _ansiYellow = '\x1b[33m';
+  // Http响应日志颜色 绿色
+  static final String _ansiGreen = '\x1b[32m';
+  // Http请求日志颜色 青色
+  static final String _ansiCyan = '\x1b[36m';
+
+  static String? _fsApi;
+  static final ValueNotifier<List<LogEntity>> logsNotifier = ValueNotifier([]);
+
+  static void showFloatButton(OverlayState? overlayState) {
     //
     FloatButton.show(overlayState);
   }
 
-  void init({required bool isDebug, String? fsApi}) {
-    this.isDebug = isDebug;
+  static void init({required bool isDebug, String? fsApi}) {
+    LogManager.isDebug = isDebug;
     if (!isDebug) return;
-    // _fsApi = fsApi;
-    debugPrint = (String? message, {int? wrapWidth}) {
-      if (message == null || message.isEmpty) return;
-      putLog(message);
-
-      String printMsg = message;
-      if (message.contains("[HTTP REQUEST]")) {
-        printMsg = "$_ansiCyan$message$_ansiReset";
-      } else if (message.contains("[HTTP RESPONSE]")) {
-        printMsg = "$_ansiGreen$message$_ansiReset";
-      } else if (message.contains("[HTTP ERROR]")) {
-        printMsg = "$_ansiRed$message$_ansiReset";
-      } else if (message.startsWith("I:")) {
-        printMsg =
-            "$_ansiWhite${message.replaceFirst(RegExp(r"I:"), "")}$_ansiReset";
-      } else if (message.startsWith("W:")) {
-        printMsg =
-            "$_ansiYellow${message.replaceFirst(RegExp(r"W:"), "")}$_ansiReset";
-      } else if (message.startsWith("E:")) {
-        printMsg =
-            "$_ansiRed${message.replaceFirst(RegExp(r"E:"), "")}$_ansiReset";
-      }
-      debugPrintThrottled(printMsg, wrapWidth: wrapWidth);
-    };
+    _fsApi = fsApi;
+    // 直接重写DebugPrint 会写入系统日志 导致界面频繁更新
     FlutterError.onError = (details) {
       putLog(details.exception, level: LogLevel.error);
     };
@@ -92,7 +72,7 @@ class LogManager {
     };
   }
 
-  Future<void> send2Fs(LogEntity entity) async {
+  static Future<void> send2Fs(LogEntity entity) async {
     final url = _fsApi;
     if (url == null || url.isEmpty) {
       return;
@@ -111,17 +91,13 @@ class LogManager {
     } catch (_) {}
   }
 
-  Future<void> send2FsMul(List<LogEntity> logs) async {
+  static Future<void> send2FsMul(List<LogEntity> logs) async {
     for (var entity in logs) {
       send2Fs(entity);
     }
   }
 
-  final ValueNotifier<List<LogEntity>> logsNotifier = ValueNotifier([]);
-  final ValueNotifier<List<String>> filter = ValueNotifier(["", ""]);
-  final int maxLogs = 500;
-
-  void putLog(dynamic msg, {LogLevel level = LogLevel.info}) {
+  static void putLog(dynamic msg, {LogLevel level = LogLevel.info}) {
     if (!isDebug) return;
     final currentList = List<LogEntity>.from(logsNotifier.value);
     if (currentList.length >= maxLogs) {
@@ -131,21 +107,39 @@ class LogManager {
     logsNotifier.value = currentList;
   }
 
-  void logI(dynamic msg) {
-    if (isDebug) {
-      debugPrint("I:$msg");
+  static void log(dynamic msg, {LogLevel level = LogLevel.info}) {
+    if (!isDebug) return;
+    switch (level) {
+      case LogLevel.httpRequest:
+        debugPrint("$_ansiCyan$msg$_ansiReset");
+        break;
+      case LogLevel.httpResponse:
+        debugPrint("$_ansiGreen$msg$_ansiReset");
+        break;
+      case LogLevel.httpError:
+      case LogLevel.error:
+        debugPrint("$_ansiRed$msg$_ansiReset");
+        break;
+      case LogLevel.info:
+        debugPrint("$_ansiBlue$msg$_ansiReset");
+
+        break;
+      case LogLevel.warning:
+        debugPrint("$_ansiYellow$msg$_ansiReset");
+        break;
     }
+    putLog(msg, level:level);
   }
 
-  void logW(dynamic msg) {
-    if (isDebug) {
-      debugPrint("W:$msg");
-    }
+  static void logI(dynamic msg) {
+    log(msg, level: LogLevel.info);
   }
 
-  void logE(dynamic msg) {
-    if (isDebug) {
-      debugPrint("E:$msg");
-    }
+  static void logW(dynamic msg) {
+    log(msg, level: LogLevel.warning);
+  }
+
+  static void logE(dynamic msg) {
+    log(msg, level: LogLevel.error);
   }
 }

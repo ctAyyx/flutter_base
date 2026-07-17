@@ -8,11 +8,11 @@ class LogDioInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (LogManager.instance.isDebug) {
+    if (LogManager.isDebug) {
       final startTime = DateTime.now().millisecondsSinceEpoch;
       options.extra[_keyTime] = startTime;
       final buffer = StringBuffer();
-      buffer.writeln('[HTTP REQUEST] ${options.method.toUpperCase()}');
+      buffer.writeln('${LogLevel.httpRequest.key} | ${options.method.toUpperCase()}');
       buffer.writeln('URL: ${options.uri}');
       buffer.writeln('─── Headers ───');
       options.headers.forEach((key, value) {
@@ -22,15 +22,14 @@ class LogDioInterceptor extends Interceptor {
         buffer.writeln('RequestBody: ${_prettyJson(options.data)}');
       }
       // 发送给我们的自研日志管理器
-      debugPrint("请求==>${buffer.toString()}");
-      LogManager.instance.putLog(buffer.toString(), level: LogLevel.info);
+      LogManager.log( buffer.toString(), level: LogLevel.httpRequest);
     }
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (LogManager.instance.isDebug) {
+    if (LogManager.isDebug) {
       final startTime = response.requestOptions.extra[_keyTime] as int?;
       String duration = "0ms";
       if (startTime != null) {
@@ -40,24 +39,23 @@ class LogDioInterceptor extends Interceptor {
 
       final buffer = StringBuffer();
       buffer.writeln(
-        '[HTTP RESPONSE] | ${response.requestOptions.method.toUpperCase()} | Status Code:${response.statusCode} | $duration',
+        '${LogLevel.httpResponse.key} | ${response.requestOptions.method.toUpperCase()} | Status:${response.statusCode} | $duration',
       );
       buffer.writeln('URL: ${response.requestOptions.uri}');
       if (response.data != null) {
         buffer.writeln('ResponseBody: ${_prettyJson(response.data)}');
       }
-      debugPrint("响应==>${buffer.toString()}");
-      LogManager.instance.putLog(buffer.toString(), level: LogLevel.info);
+      LogManager.log( buffer.toString(), level: LogLevel.httpResponse);
     }
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (LogManager.instance.isDebug) {
+    if (LogManager.isDebug) {
       final buffer = StringBuffer();
       buffer.writeln(
-        '[HTTP ERROR] ${err.requestOptions.method.toUpperCase()} Status Code: ${err.response?.statusCode ?? 'UNKNOWN'}',
+        '${LogLevel.httpError.key} | ${err.requestOptions.method.toUpperCase()} | Status: ${err.response?.statusCode ?? 'UNKNOWN'}',
       );
       buffer.writeln('URL: ${err.requestOptions.uri}');
       buffer.writeln('Message: ${err.message}');
@@ -65,8 +63,7 @@ class LogDioInterceptor extends Interceptor {
         buffer.writeln('Error Data: ${_prettyJson(err.response?.data)}');
       }
       // 错误网络日志，标记为 LogLevel.error 触发红色高亮
-      debugPrint("错误==>${buffer.toString()}");
-      LogManager.instance.putLog(buffer.toString(), level: LogLevel.error);
+      LogManager.log( buffer.toString(), level: LogLevel.httpError);
     }
     super.onError(err, handler);
   }
