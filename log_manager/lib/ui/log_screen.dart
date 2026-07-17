@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../log_bean.dart';
-import '../log_manager.dart';
+import '../net/fs_helper.dart';
 import 'log_controller.dart';
 import 'log_tab.dart';
 import 'log_search.dart';
@@ -111,7 +111,7 @@ class _LogScreenState extends State<LogScreen> {
                 child: IconButton(
                   iconSize: 18,
                   onPressed: () async {
-                    LogManager.send2Fs(entity);
+                    FsHelper.send2Fs(entity);
                   },
                   icon: const Icon(Icons.send, color: Colors.blue),
                 ),

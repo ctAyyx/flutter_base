@@ -2,18 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/riverpod/provider/app_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:log_manager/log_manager.dart';
-
+import 'package:log_manager/core/log_manager.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  LogManager.init(
-    isDebug: true,
-    fsApi:
-        "https://open.feishu.cn/open-apis/bot/v2/hook/ebda5db2-b186-4c0a-8c1a-0751a3d8ab36",
-  );
+  LogManager.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -29,7 +24,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LogManager.showFloatButton(navigatorKey.currentState?.overlay);
+      LogManager.showFloatButton(overlay: navigatorKey.currentState?.overlay);
     });
   }
 

@@ -3,7 +3,7 @@ import 'package:flutter_base/riverpod/mvi/state/credit_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:get/get.dart';
-import 'package:log_manager/log_manager.dart';
+import 'package:log_manager/log_export.dart';
 
 final creditViewModel = StateNotifierProvider.autoDispose(
   (ref) => CreditNotifier(CreditState.init()),

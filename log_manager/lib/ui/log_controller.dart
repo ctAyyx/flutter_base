@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../core/log_manager.dart';
 import '../log_bean.dart';
-import '../log_manager.dart';
 
 class LogController {
   // 日志状态过滤
@@ -17,12 +17,12 @@ class LogController {
 
   void init() {
     listenable = Listenable.merge([
-      LogManager.logsNotifier,
+      LogManager.getNotifier(),
       searchFilter,
       levelFilter,
     ]);
 
-    // listenable.addListener(onSourceChanged);
+    listenable.addListener(onSourceChanged);
     filterLogs.value = _applyFilter();
 
     keyController = TextEditingController();
@@ -44,7 +44,10 @@ class LogController {
 
   List<LogEntity> _applyFilter() {
     final List<LogEntity> preResult = [];
-    final logs = LogManager.logsNotifier.value.reversed;
+    final logs = LogManager.getNotifier()?.value.reversed;
+    if (logs == null) {
+      return [];
+    }
     final levelKeys = levelFilter.value;
     if (levelKeys.isNotEmpty) {
       final list = logs.where((entity) {
@@ -65,7 +68,7 @@ class LogController {
   }
 
   void dispose() {
-    //listenable.removeListener(onSourceChanged);
+    listenable.removeListener(onSourceChanged);
     keyController.removeListener(onTextChanged);
     keyController.dispose();
   }
