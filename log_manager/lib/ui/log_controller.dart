@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base/log/log_manager.dart';
+import 'package:log_manager/log_bean.dart';
+import '../log_manager.dart';
 
 class LogController {
   // 日志状态过滤
-  final ValueNotifier<List<LogLevel>> levelFilter = ValueNotifier([]);
+  final ValueNotifier<List<LogType>> levelFilter = ValueNotifier([]);
 
   // 关键字
   final ValueNotifier<String> searchFilter = ValueNotifier("");
 
-  //late final Listenable listenable;
+  late final Listenable listenable;
 
   final ValueNotifier<List<LogEntity>> filterLogs = ValueNotifier([]);
 
   late final TextEditingController keyController;
 
   void init() {
-    // listenable = Listenable.merge([
-    //   LogManager.instance.logsNotifier,
-    //   searchFilter,
-    //   levelFilter,
-    // ]);
-    LogManager.logsNotifier.addListener(() {
-      print("===>>>logsNotifier 开始重新过滤");
-      onSourceChanged();
-    });
-    searchFilter.addListener(() {
-      print("===>>>searchFilter 开始重新过滤");
-      onSourceChanged();
-    });
-    levelFilter.addListener(() {
-      print("===>>>levelFilter 开始重新过滤");
-      onSourceChanged();
-    });
+    listenable = Listenable.merge([
+      LogManager.logsNotifier,
+      searchFilter,
+      levelFilter,
+    ]);
+
     // listenable.addListener(onSourceChanged);
     filterLogs.value = _applyFilter();
 
@@ -80,7 +70,7 @@ class LogController {
     keyController.dispose();
   }
 
-  void onFilter(List<LogLevel> filter) {
+  void onFilter(List<LogType> filter) {
     levelFilter.value = filter;
   }
 }

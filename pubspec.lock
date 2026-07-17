@@ -557,6 +557,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.1.0"
+  log_manager:
+    dependency: "direct main"
+    description:
+      path: log_manager
+      relative: true
+    source: path
+    version: "0.0.1"
   logging:
     dependency: transitive
     description:

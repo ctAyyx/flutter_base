@@ -48,6 +48,8 @@ dependencies:
   talker_flutter: ^5.1.15
   talker_dio_logger: ^5.1.15
   encrypt: ^5.0.1
+  log_manager:
+    path: log_manager
   native_bridge:
     path: native_bridge
 

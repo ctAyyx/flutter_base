@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/common/common_widget.dart';
-import 'package:flutter_base/log/log_manager.dart';
-import 'package:flutter_base/log/log_screen.dart';
 import 'package:flutter_base/riverpod/router/app_router.gr.dart';
 import 'package:flutter_base/riverpod/util/timer_util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,14 +72,6 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               },
             ),
             const SizedBox(height: 24),
-            SubmitButton.general(
-              text: "日志列表",
-              onClick: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (context) => LogScreen()));
-              },
-            ),
             const SizedBox(height: 24),
             SubmitButton.general(text: "测试飞书消息", onClick: () {}),
             const SizedBox(height: 48),

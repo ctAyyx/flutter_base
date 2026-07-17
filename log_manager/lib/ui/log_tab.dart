@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../log_manager.dart';
+import 'package:log_manager/log_bean.dart';
 
 class LogTab extends StatefulWidget {
-  final ValueChanged<List<LogLevel>> onTabClick;
+  final ValueChanged<List<LogType>> onTabClick;
 
   const LogTab({super.key, required this.onTabClick});
 
@@ -32,31 +32,28 @@ class _LogTabState extends State<LogTab> {
             title: "Http Request",
             index: 1,
             onTap: () {
-              widget.onTabClick.call([LogLevel.httpRequest]);
+              widget.onTabClick.call([LogType.httpRequest]);
             },
           ),
           _buildTab(
             title: "Http Response",
             index: 2,
             onTap: () {
-              widget.onTabClick.call([LogLevel.httpResponse]);
+              widget.onTabClick.call([LogType.httpResponse]);
             },
           ),
           _buildTab(
             title: "Error",
             index: 3,
             onTap: () {
-              widget.onTabClick.call([LogLevel.httpError, LogLevel.error]);
+              widget.onTabClick.call([LogType.httpError, LogType.error]);
             },
           ),
           _buildTab(
             title: "Info",
             index: 4,
             onTap: () {
-              widget.onTabClick.call([
-                LogLevel.info,
-                LogLevel.warning,
-              ]);
+              widget.onTabClick.call([LogType.info, LogType.warning]);
             },
           ),
         ],

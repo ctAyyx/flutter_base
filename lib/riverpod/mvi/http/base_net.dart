@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_base/common/misty_util.dart';
 import 'package:flutter_base/riverpod/mvi/http/api_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:log_manager/net/log_dio.dart';
 
 import '../../../constants.dart';
-import '../../../log/log_dio.dart';
 
 final apiServiceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);

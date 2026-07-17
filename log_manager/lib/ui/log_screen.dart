@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base/log/log_controller.dart';
-import 'package:flutter_base/log/log_manager.dart';
 
-import 'widget/log_search.dart';
-import 'widget/log_tab.dart';
+import '../log_bean.dart';
+import '../log_manager.dart';
+import 'log_controller.dart';
+import 'log_tab.dart';
+import 'log_search.dart';
 
 class LogScreen extends StatefulWidget {
   const LogScreen({super.key});
@@ -49,7 +50,7 @@ class _LogScreenState extends State<LogScreen> {
               builder: (context, filterLogs, _) {
                 return ListView.separated(
                   key: ValueKey("A"),
-                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  separatorBuilder: (_,index) => const SizedBox(height: 8),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
@@ -71,16 +72,16 @@ class _LogScreenState extends State<LogScreen> {
   /// 获取颜色
   Color _getLogColor(LogEntity entity) {
     switch (entity.level) {
-      case LogLevel.info:
+      case LogType.info:
         return Colors.lightBlueAccent;
-      case LogLevel.warning:
+      case LogType.warning:
         return Colors.yellowAccent;
-      case LogLevel.error:
-      case LogLevel.httpError:
+      case LogType .error:
+      case LogType.httpError:
         return Colors.redAccent;
-      case LogLevel.httpRequest:
+      case LogType.httpRequest:
         return Color(0xFF00FFFF);
-      case LogLevel.httpResponse:
+      case LogType.httpResponse:
         return Color(0xFF00FF00);
     }
   }

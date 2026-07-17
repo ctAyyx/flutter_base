@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'log_manager.dart';
+import 'package:log_manager/log_bean.dart';
+import '../log_manager.dart';
 
 class LogDioInterceptor extends Interceptor {
   static const String _keyTime = "log_dio_start_time";
@@ -12,7 +12,7 @@ class LogDioInterceptor extends Interceptor {
       final startTime = DateTime.now().millisecondsSinceEpoch;
       options.extra[_keyTime] = startTime;
       final buffer = StringBuffer();
-      buffer.writeln('${LogLevel.httpRequest.key} | ${options.method.toUpperCase()}');
+      buffer.writeln('${LogType.httpRequest.key} | ${options.method.toUpperCase()}');
       buffer.writeln('URL: ${options.uri}');
       buffer.writeln('─── Headers ───');
       options.headers.forEach((key, value) {
@@ -22,7 +22,7 @@ class LogDioInterceptor extends Interceptor {
         buffer.writeln('RequestBody: ${_prettyJson(options.data)}');
       }
       // 发送给我们的自研日志管理器
-      LogManager.log( buffer.toString(), level: LogLevel.httpRequest);
+      LogManager.log( buffer.toString(), level: LogType.httpRequest);
     }
     super.onRequest(options, handler);
   }
@@ -39,13 +39,13 @@ class LogDioInterceptor extends Interceptor {
 
       final buffer = StringBuffer();
       buffer.writeln(
-        '${LogLevel.httpResponse.key} | ${response.requestOptions.method.toUpperCase()} | Status:${response.statusCode} | $duration',
+        '${LogType.httpResponse.key} | ${response.requestOptions.method.toUpperCase()} | Status:${response.statusCode} | $duration',
       );
       buffer.writeln('URL: ${response.requestOptions.uri}');
       if (response.data != null) {
         buffer.writeln('ResponseBody: ${_prettyJson(response.data)}');
       }
-      LogManager.log( buffer.toString(), level: LogLevel.httpResponse);
+      LogManager.log( buffer.toString(), level: LogType.httpResponse);
     }
     super.onResponse(response, handler);
   }
@@ -55,7 +55,7 @@ class LogDioInterceptor extends Interceptor {
     if (LogManager.isDebug) {
       final buffer = StringBuffer();
       buffer.writeln(
-        '${LogLevel.httpError.key} | ${err.requestOptions.method.toUpperCase()} | Status: ${err.response?.statusCode ?? 'UNKNOWN'}',
+        '${LogType.httpError.key} | ${err.requestOptions.method.toUpperCase()} | Status: ${err.response?.statusCode ?? 'UNKNOWN'}',
       );
       buffer.writeln('URL: ${err.requestOptions.uri}');
       buffer.writeln('Message: ${err.message}');
@@ -63,7 +63,7 @@ class LogDioInterceptor extends Interceptor {
         buffer.writeln('Error Data: ${_prettyJson(err.response?.data)}');
       }
       // 错误网络日志，标记为 LogLevel.error 触发红色高亮
-      LogManager.log( buffer.toString(), level: LogLevel.httpError);
+      LogManager.log( buffer.toString(), level: LogType.httpError);
     }
     super.onError(err, handler);
   }

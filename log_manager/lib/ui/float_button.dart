@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_base/log/log_screen.dart';
+
+import 'log_screen.dart';
 
 class FloatButton {
   static OverlayEntry? _overlayEntry;

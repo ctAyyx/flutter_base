@@ -1,35 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_base/log/float_button.dart';
-import 'package:flutter_base/log/util/time_util.dart';
-
-enum LogLevel {
-  info(key: "I:"),
-  warning(key: "W:"),
-  error(key: "E:"),
-  httpRequest(key: "[HTTP请求]"),
-  httpResponse(key: "[HTTP响应]"),
-  httpError(key: "[HTTP错误]");
-
-  final String key;
-
-  const LogLevel({required this.key});
-}
-
-class LogEntity {
-  final String message;
-  final LogLevel level;
-  final String time;
-
-  LogEntity(this.message, this.level)
-    : time = TimeUtil.getFormatTime(DateTime.now());
-
-  String getRMessage() {
-    RegExp regExp = RegExp(r"^(W:|I:|E:|N:)");
-    return message.replaceFirst(regExp, "");
-  }
-}
+import 'package:flutter/material.dart';
+import 'log_bean.dart';
+import 'ui/float_button.dart';
 
 class LogManager {
   LogManager._();
@@ -39,14 +12,19 @@ class LogManager {
 
   // 重置为系统颜色
   static final String _ansiReset = '\x1b[0m';
+
   // 普通日志颜色 蓝色
   static final String _ansiBlue = '\x1b[34m';
+
   // 错误日志颜色 红色
   static final String _ansiRed = '\x1b[31m';
+
   // 警告日志颜色 黄色
   static final String _ansiYellow = '\x1b[33m';
+
   // Http响应日志颜色 绿色
   static final String _ansiGreen = '\x1b[32m';
+
   // Http请求日志颜色 青色
   static final String _ansiCyan = '\x1b[36m';
 
@@ -64,10 +42,10 @@ class LogManager {
     _fsApi = fsApi;
     // 直接重写DebugPrint 会写入系统日志 导致界面频繁更新
     FlutterError.onError = (details) {
-      putLog(details.exception, level: LogLevel.error);
+      putLog(details.exception, level: LogType.error);
     };
     PlatformDispatcher.instance.onError = (error, stack) {
-      putLog(error, level: LogLevel.error);
+      putLog(error, level: LogType.error);
       return true;
     };
   }
@@ -97,7 +75,7 @@ class LogManager {
     }
   }
 
-  static void putLog(dynamic msg, {LogLevel level = LogLevel.info}) {
+  static void putLog(dynamic msg, {LogType level =LogType .info}) {
     if (!isDebug) return;
     final currentList = List<LogEntity>.from(logsNotifier.value);
     if (currentList.length >= maxLogs) {
@@ -107,39 +85,39 @@ class LogManager {
     logsNotifier.value = currentList;
   }
 
-  static void log(dynamic msg, {LogLevel level = LogLevel.info}) {
+  static void log(dynamic msg, {LogType level = LogType.info}) {
     if (!isDebug) return;
     switch (level) {
-      case LogLevel.httpRequest:
+      case LogType.httpRequest:
         debugPrint("$_ansiCyan$msg$_ansiReset");
         break;
-      case LogLevel.httpResponse:
+      case LogType.httpResponse:
         debugPrint("$_ansiGreen$msg$_ansiReset");
         break;
-      case LogLevel.httpError:
-      case LogLevel.error:
+      case LogType.httpError:
+      case LogType.error:
         debugPrint("$_ansiRed$msg$_ansiReset");
         break;
-      case LogLevel.info:
+      case LogType.info:
         debugPrint("$_ansiBlue$msg$_ansiReset");
 
         break;
-      case LogLevel.warning:
+      case LogType.warning:
         debugPrint("$_ansiYellow$msg$_ansiReset");
         break;
     }
-    putLog(msg, level:level);
+    putLog(msg, level: level);
   }
 
   static void logI(dynamic msg) {
-    log(msg, level: LogLevel.info);
+    log(msg, level:LogType .info);
   }
 
   static void logW(dynamic msg) {
-    log(msg, level: LogLevel.warning);
+    log(msg, level:LogType .warning);
   }
 
   static void logE(dynamic msg) {
-    log(msg, level: LogLevel.error);
+    log(msg, level: LogType.error);
   }
 }
