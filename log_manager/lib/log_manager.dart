@@ -61,7 +61,7 @@ class LogManager {
         "msg_type": "text",
         "content": {"text": entity.getRMessage()},
       };
-      final response = await dio.post(
+      await dio.post(
         url,
         data: data,
         options: Options(contentType: Headers.jsonContentType),
@@ -75,7 +75,7 @@ class LogManager {
     }
   }
 
-  static void putLog(dynamic msg, {LogType level =LogType .info}) {
+  static void putLog(dynamic msg, {LogType level = LogType.info}) {
     if (!isDebug) return;
     final currentList = List<LogEntity>.from(logsNotifier.value);
     if (currentList.length >= maxLogs) {
@@ -110,11 +110,11 @@ class LogManager {
   }
 
   static void logI(dynamic msg) {
-    log(msg, level:LogType .info);
+    log(msg, level: LogType.info);
   }
 
   static void logW(dynamic msg) {
-    log(msg, level:LogType .warning);
+    log(msg, level: LogType.warning);
   }
 
   static void logE(dynamic msg) {
