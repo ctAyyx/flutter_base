@@ -4,7 +4,7 @@ import 'log_screen.dart';
 
 class FloatButton {
   static OverlayEntry? _overlayEntry;
-  static Offset _offset = const Offset(300, 700);
+  static Offset _offset = const Offset(-1, -1);
 
   static void show(OverlayState? overlayState) {
     if (_overlayEntry != null || overlayState == null) {
@@ -13,6 +13,11 @@ class FloatButton {
 
     _overlayEntry = OverlayEntry(
       builder: (context) {
+        if (_offset.dx == -1 && _offset.dy == -1) {
+          final size = MediaQuery.of(context).size;
+          _offset += Offset(size.width - 56, size.height - 76);
+        }
+
         return Positioned(
           left: _offset.dx,
           top: _offset.dy,
