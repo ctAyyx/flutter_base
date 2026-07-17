@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:log_manager/log_bean.dart';
+import '../log_bean.dart';
 import '../log_manager.dart';
 
 class LogController {

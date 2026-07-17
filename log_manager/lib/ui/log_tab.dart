@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:log_manager/log_bean.dart';
+
+import '../log_bean.dart';
 
 class LogTab extends StatefulWidget {
   final ValueChanged<List<LogType>> onTabClick;

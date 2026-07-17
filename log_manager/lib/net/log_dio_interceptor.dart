@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:log_manager/log_bean.dart';
+import '../log_bean.dart';
 import '../log_manager.dart';
 
 class LogDioInterceptor extends Interceptor {

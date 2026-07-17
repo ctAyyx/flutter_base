@@ -1,4 +1,4 @@
-import 'package:log_manager/util/time_util.dart';
+import 'util/time_util.dart';
 
 /// 日志类型
 enum LogType {
