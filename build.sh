@@ -73,6 +73,13 @@ do_apk(){
   exit 0
 }
 
+do_gray_apk(){
+    echo "--- 构建 GrayRelease 版本 ---"
+    execute_step  "build apk" '${FLUTTER_CMD} build apk --release --dart-define="APP_ENV=gray"'
+    do_open
+    exit 0
+}
+
 do_open(){
   if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     local win_path=$(cygpath -w "$APK_PATH")
@@ -101,17 +108,17 @@ if [ "$MODE" == "build" ]; then
 elif [ "$MODE" == "reBuild" ] ; then
     do_base
     echo -e "${COLOR_GREEN}>>> 重新构建完成 <<<${COLOR_NC}"
-elif [ "$MODE" == "apk" ] ; then
+elif [ "$MODE" == "gray" ] ; then
     do_base
-    do_apk
-    echo -e "${COLOR_GREEN}>>> 打包完成 <<<${COLOR_NC}"
+    do_gray_apk
+    echo -e "${COLOR_GREEN}>>> GrayRelease打包完成 <<<${COLOR_NC}"
 elif [ "$MODE" == "plugin" ]; then
     do_plugin
     echo -e "${COLOR_GREEN}>>> 构建插件完成 <<<${COLOR_NC}"
 else
    do_base
    do_apk
-   echo -e "${COLOR_GREEN}>>> 打包完成 <<<${COLOR_NC}"
+   echo -e "${COLOR_GREEN}>>> Release打包完成 <<<${COLOR_NC}"
  fi
 
 
