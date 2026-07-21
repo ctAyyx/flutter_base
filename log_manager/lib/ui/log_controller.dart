@@ -42,6 +42,10 @@ class LogController {
     }
   }
 
+  void clear() {
+    LogManager.getNotifier()?.value = [];
+  }
+
   List<LogEntity> _applyFilter() {
     final List<LogEntity> preResult = [];
     final logs = LogManager.getNotifier()?.value.reversed;

@@ -36,7 +36,15 @@ class _LogScreenState extends State<LogScreen> {
       backgroundColor: const Color(0xFF1E1E1E),
       appBar: AppBar(
         backgroundColor: Colors.black87,
+        foregroundColor: Colors.white,
         title: const Text("App运行日志", style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _logController.clear();
+              },
+              icon: Icon(Icons.clear_all))
+        ],
       ),
       body: Column(
         children: [
@@ -49,8 +57,9 @@ class _LogScreenState extends State<LogScreen> {
               valueListenable: _logController.filterLogs,
               builder: (context, filterLogs, _) {
                 return ListView.separated(
+                  reverse: true,
                   key: ValueKey("A"),
-                  separatorBuilder: (_,index) => const SizedBox(height: 8),
+                  separatorBuilder: (_, index) => const SizedBox(height: 8),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
@@ -76,7 +85,7 @@ class _LogScreenState extends State<LogScreen> {
         return Colors.lightBlueAccent;
       case LogType.warning:
         return Colors.yellowAccent;
-      case LogType .error:
+      case LogType.error:
       case LogType.httpError:
         return Colors.redAccent;
       case LogType.httpRequest:
@@ -106,15 +115,12 @@ class _LogScreenState extends State<LogScreen> {
           Row(
             children: [
               Spacer(),
-              CircleAvatar(
-                backgroundColor: Colors.white70,
-                child: IconButton(
-                  iconSize: 18,
-                  onPressed: () async {
-                    FsHelper.send2Fs(entity);
-                  },
-                  icon: const Icon(Icons.send, color: Colors.blue),
-                ),
+              IconButton(
+                iconSize: 18,
+                onPressed: () async {
+                  FsHelper.send2Fs(entity);
+                },
+                icon: const Icon(Icons.send, color: Colors.white),
               ),
             ],
           ),
