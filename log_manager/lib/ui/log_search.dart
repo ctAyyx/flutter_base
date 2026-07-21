@@ -36,7 +36,7 @@ class _LogSearchState extends State<LogSearch> {
         decoration: InputDecoration(
           border: InputBorder.none,
           hint: Text(
-            "关键字过滤",
+            "Filter",
             style: TextStyle(color: Colors.white60, fontSize: 12),
           ),
         ),

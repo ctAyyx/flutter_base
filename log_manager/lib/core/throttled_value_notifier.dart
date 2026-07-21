@@ -4,20 +4,22 @@ import 'package:flutter/foundation.dart';
 
 class ThrottledValueNotifier<T> extends ChangeNotifier
     implements ValueListenable<List<T>> {
-  final int maxNum;
-  final int milTime;
+  int _maxNum = 0;
+  int _milTime = 0;
   final List<T> _value = [];
   final Set<T> _set = {};
   Timer? _timer;
+  bool startNotifier = false;
 
-  ThrottledValueNotifier({this.maxNum = 500, this.milTime = 500}) {
+  ThrottledValueNotifier() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
+    setThrottleConfig();
   }
 
-  void initTimer() {
-    _timer = Timer(Duration(milliseconds: milTime), () {
+  void _initTimer() {
+    _timer = Timer(Duration(milliseconds: _milTime), () {
       _timer = null;
       notifyListeners();
     });
@@ -25,6 +27,15 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
 
   @override
   List<T> get value => List.unmodifiable(_value);
+
+  void setThrottleConfig({int maxSize = 500, int throttleTime = 1000}) {
+    if (maxSize > 0) {
+      _maxNum = maxSize;
+    }
+    if (throttleTime > 0) {
+      _milTime = throttleTime;
+    }
+  }
 
   void clear() {
     _value.clear();
@@ -36,16 +47,20 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
     if (_set.contains(newValue)) {
       return;
     }
-    if (_value.length >= maxNum) {
+    if (_value.length >= _maxNum) {
       final oldValue = _value.removeAt(0);
       _set.remove(oldValue);
     }
     _value.add(newValue);
     _set.add(newValue);
 
+    if (!startNotifier) {
+      return;
+    }
+
     if (_timer?.isActive != true) {
       notifyListeners();
-      initTimer();
+      _initTimer();
     }
   }
 
@@ -54,6 +69,7 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
 
   @override
   void dispose() {
+    startNotifier = false;
     _timer?.cancel();
     _timer = null;
     super.dispose();

@@ -25,20 +25,14 @@ dependencies:
 ```
 
 ## Usage
-
-
+ 
 ```
   // main.dart 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   ...
-  LogManager.init(
-    isDebug: true,
-    // option feishu webhook 
-    fsApi:"",
-        
-  );
+  LogManager.init();
   runApp(MyApp());
 }
 
@@ -73,7 +67,6 @@ class _MyAppState extends ConsumerState<MyApp> {
   //Option  Dio Interceptor
   dio.interceptors.add(LogDioInterceptor());
 ```
-
 
 ## Additional information
 

@@ -23,7 +23,7 @@ class LogDioInterceptorImpl extends Interceptor {
       buffer.writeln('$key: $value');
     });
     if (options.data != null) {
-      buffer.writeln('RequestBody: ${_prettyJson(options.data)}');
+      buffer.writeln('Body: ${_prettyJson(options.data)}');
     }
     // 发送给我们的自研日志管理器
     LogManager.log(buffer.toString(), level: LogType.httpRequest);
@@ -45,7 +45,7 @@ class LogDioInterceptorImpl extends Interceptor {
     );
     buffer.writeln('URL: ${response.requestOptions.uri}');
     if (response.data != null) {
-      buffer.writeln('ResponseBody: ${_prettyJson(response.data)}');
+      buffer.writeln('Body: ${_prettyJson(response.data)}');
     }
     LogManager.log(buffer.toString(), level: LogType.httpResponse);
     super.onResponse(response, handler);

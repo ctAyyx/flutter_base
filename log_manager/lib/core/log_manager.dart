@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:log_sys/core/throttled_value_notifier.dart';
 
 import '../log_bean.dart';
 import 'log_manager_config.dart';
@@ -39,7 +40,7 @@ class LogManager {
     _instance.showFloatButton(overlay: overlay);
   }
 
-  static ValueNotifier<List<LogEntity>>? getNotifier() {
+  static ThrottledValueNotifier<LogEntity>? getNotifier() {
     return _instance.getNotifier();
   }
 

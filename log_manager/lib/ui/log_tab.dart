@@ -30,6 +30,13 @@ class _LogTabState extends State<LogTab> {
             },
           ),
           _buildTab(
+            title: "Http",
+            index: 5,
+            onTap: () {
+              widget.onTabClick.call([LogType.httpRequest,LogType.httpResponse,LogType.httpError]);
+            },
+          ),
+          _buildTab(
             title: "Http Request",
             index: 1,
             onTap: () {

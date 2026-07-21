@@ -1,6 +1,9 @@
 class LogManagerConfig {
   final String? fsApi;
+  // 最大日志数量
   final int maxLogs;
+  // 日志刷新间隔 避免频繁刷新导致ANR
+  final int throttleTime;
 
   // 普通日志颜色
   final String logInfoColor;
@@ -20,6 +23,7 @@ class LogManagerConfig {
   LogManagerConfig(
       {this.fsApi,
         required this.maxLogs,
+        required this.throttleTime,
         required this.logInfoColor,
         required this.logErrorColor,
         required this.logWaringColor,
@@ -29,6 +33,7 @@ class LogManagerConfig {
   factory LogManagerConfig.init(
       {String? fsApi,
         int maxLogs = 500,
+        int throttleTime = 600,
         // 普通日志颜色 蓝色
         String logInfoColor = '\x1b[34m',
         // 错误日志颜色 红色
@@ -42,6 +47,7 @@ class LogManagerConfig {
       LogManagerConfig(
           fsApi: fsApi,
           maxLogs: maxLogs,
+          throttleTime:throttleTime,
           logInfoColor: logInfoColor,
           logErrorColor: logErrorColor,
           logWaringColor: logWaringColor,

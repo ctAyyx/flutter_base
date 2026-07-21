@@ -16,6 +16,7 @@ class LogController {
   late final TextEditingController keyController;
 
   void init() {
+    LogManager.getNotifier()?.startNotifier = true;
     listenable = Listenable.merge([
       LogManager.getNotifier(),
       searchFilter,
@@ -43,7 +44,7 @@ class LogController {
   }
 
   void clear() {
-    LogManager.getNotifier()?.value = [];
+    LogManager.getNotifier()?.clear();
   }
 
   List<LogEntity> _applyFilter() {
@@ -73,6 +74,7 @@ class LogController {
 
   void dispose() {
     listenable.removeListener(onSourceChanged);
+    LogManager.getNotifier()?.startNotifier = false;
     keyController.removeListener(onTextChanged);
     keyController.dispose();
   }

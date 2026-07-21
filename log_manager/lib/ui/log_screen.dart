@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:log_sys/core/log_manager.dart';
 
 import '../log_bean.dart';
 import '../net/fs_helper.dart';
@@ -37,7 +38,7 @@ class _LogScreenState extends State<LogScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black87,
         foregroundColor: Colors.white,
-        title: const Text("App运行日志", style: TextStyle(color: Colors.white)),
+        title: const Text("App Log", style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
               onPressed: () {
@@ -53,12 +54,11 @@ class _LogScreenState extends State<LogScreen> {
           LogSearch(controller: _logController.keyController),
           Expanded(
             child: ValueListenableBuilder(
-              key: ValueKey("A"),
+              key: ValueKey("LogScreen"),
               valueListenable: _logController.filterLogs,
               builder: (context, filterLogs, _) {
                 return ListView.separated(
                   reverse: true,
-                  key: ValueKey("A"),
                   separatorBuilder: (_, index) => const SizedBox(height: 8),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -115,13 +115,14 @@ class _LogScreenState extends State<LogScreen> {
           Row(
             children: [
               Spacer(),
-              IconButton(
-                iconSize: 18,
-                onPressed: () async {
-                  FsHelper.send2Fs(entity);
-                },
-                icon: const Icon(Icons.send, color: Colors.white),
-              ),
+              if (LogManager.getConfig()?.fsApi != null)
+                IconButton(
+                  iconSize: 18,
+                  onPressed: () async {
+                    FsHelper.send2Fs(entity);
+                  },
+                  icon: const Icon(Icons.send, color: Colors.white),
+                ),
             ],
           ),
         ],

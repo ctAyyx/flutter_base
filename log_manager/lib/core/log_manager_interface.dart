@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../log_bean.dart';
 import 'log_manager_config.dart';
+import 'throttled_value_notifier.dart';
 
 abstract class ILogManager {
   void init({LogManagerConfig? config});
-
 
   void showFloatButton({OverlayState? overlay});
 
@@ -19,15 +19,13 @@ abstract class ILogManager {
 
   void logE(dynamic msg);
 
-  ValueNotifier<List<LogEntity>>? getNotifier();
+  ThrottledValueNotifier<LogEntity>? getNotifier();
 
   LogManagerConfig? getConfig();
 }
 
 class LogManagerNull implements ILogManager {
   const LogManagerNull();
-
-
 
   @override
   void log(msg, {LogType level = LogType.info}) {}
@@ -48,7 +46,7 @@ class LogManagerNull implements ILogManager {
   void putLog(msg, {LogType level = LogType.info}) {}
 
   @override
-  ValueNotifier<List<LogEntity>>? getNotifier() {
+  ThrottledValueNotifier<LogEntity>? getNotifier() {
     return null;
   }
 
@@ -58,7 +56,5 @@ class LogManagerNull implements ILogManager {
   }
 
   @override
-  void init({LogManagerConfig? config}) {
-
-  }
+  void init({LogManagerConfig? config}) {}
 }

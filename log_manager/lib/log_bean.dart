@@ -5,9 +5,9 @@ enum LogType {
   info(key: "I:"),
   warning(key: "W:"),
   error(key: "E:"),
-  httpRequest(key: "[HTTP请求]"),
-  httpResponse(key: "[HTTP响应]"),
-  httpError(key: "[HTTP错误]");
+  httpRequest(key: "[HttpRequest]"),
+  httpResponse(key: "[HttpResponse]"),
+  httpError(key: "[HttpError]");
 
   final String key;
 
@@ -21,7 +21,7 @@ class LogEntity {
   final String time;
 
   LogEntity(this.message, this.level)
-    : time = TimeUtil.getFormatTime(DateTime.now());
+      : time = TimeUtil.getFormatTime(DateTime.now());
 
   String getRMessage() {
     RegExp regExp = RegExp(r"^(W:|I:|E:|N:)");
