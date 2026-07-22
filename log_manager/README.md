@@ -21,7 +21,7 @@ Add this package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  log_sys:^1.0.1
+  log_sys:^1.0.3
 ```
 
 ## Usage
