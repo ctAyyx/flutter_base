@@ -66,6 +66,17 @@ do_plugin(){
   local  final_args=${ARGS:-"native_plugin"}
   execute_step "执行构建插件操作" "${FLUTTER_CMD}  create --template=plugin --platforms=android,ios $final_args"
 }
+
+do_dart(){
+  local  final_args=${ARGS:-"native_util"}
+  execute_step "执行构建Dart包操作" "dart create --template=package $final_args"
+}
+
+do_flutter(){
+  local  final_args=${ARGS:-"native_flutter"}
+  execute_step "执行构建Flutter包操作" "${FLUTTER_CMD}  create --template=package $final_args"
+}
+
 do_apk(){
   echo "--- 构建 Release 版本 ---"
   execute_step  "build apk" "${FLUTTER_CMD} build apk --release"
@@ -75,8 +86,26 @@ do_apk(){
 
 do_gray_apk(){
     echo "--- 构建 GrayRelease 版本 ---"
-    execute_step  "build apk" '${FLUTTER_CMD} build apk --release --dart-define="APP_ENV=gray"'
+    execute_step  "build gray apk" '${FLUTTER_CMD} build apk --release --dart-define="APP_ENV=gray"'
     do_open
+    exit 0
+}
+
+do_analyze_apk(){
+    echo "--- 构建 分析包 ---"
+    local log_file="build_analyze.log"
+    execute_step  "build analyze apk" "${FLUTTER_CMD} build apk --release --analyze-size --target-platform android-arm64 | tee $log_file"
+    local devtools_cmd=$(grep "dart devtools --appSizeBase=" "$log_file" | tail -n 1 | sed 's/\\/\//g')
+    rm -f "$log_file"
+    if [ -n "$devtools_cmd" ]; then
+            echo -e "${COLOR_GREEN} 成功提取到分析命令，正在自动启动 DevTools...${COLOR_NC}"
+            echo -e "${COLOR_YELLOW}执行命令: $devtools_cmd${COLOR_NC}"
+            echo ""
+            eval "$devtools_cmd"
+    else
+            echo -e "${COLOR_RED} 未能在日志中找到 DevTools 启动命令，请检查上方日志。${COLOR_NC}"
+    fi
+
     exit 0
 }
 
@@ -108,13 +137,23 @@ if [ "$MODE" == "build" ]; then
 elif [ "$MODE" == "reBuild" ] ; then
     do_base
     echo -e "${COLOR_GREEN}>>> 重新构建完成 <<<${COLOR_NC}"
+elif [ "$MODE" == "plugin" ]; then
+    do_plugin
+    echo -e "${COLOR_GREEN}>>> 构建插件完成 <<<${COLOR_NC}"
+elif [ "$MODE" == "dart" ]; then
+    do_dart
+    echo -e "${COLOR_GREEN}>>> 构建Dart包完成 <<<${COLOR_NC}"
+elif [ "$MODE" == "flutter" ]; then
+    do_flutter
+    echo -e "${COLOR_GREEN}>>> 构建Flutter包完成 <<<${COLOR_NC}"
 elif [ "$MODE" == "gray" ] ; then
     do_base
     do_gray_apk
     echo -e "${COLOR_GREEN}>>> GrayRelease打包完成 <<<${COLOR_NC}"
-elif [ "$MODE" == "plugin" ]; then
-    do_plugin
-    echo -e "${COLOR_GREEN}>>> 构建插件完成 <<<${COLOR_NC}"
+elif [ "$MODE" == "analyze" ] ; then
+    do_base
+    do_analyze_apk
+    echo -e "${COLOR_GREEN}>>> 分析包打包完成 直接运行显示的命名 <<<${COLOR_NC}"
 else
    do_base
    do_apk

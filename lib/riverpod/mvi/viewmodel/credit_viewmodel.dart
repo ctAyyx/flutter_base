@@ -14,7 +14,8 @@ final itemNotifier = Provider.family<OptionItem?, String>((ref, id) {
   return ref.watch(
     creditViewModel.select(
       (state) => state.options?.firstWhereOrNull((e) {
-        LogManager.logI("筛选数据ItemNotifier：$e");
+        // LogManager.logI("筛选数据ItemNotifier：$e");
+        debugPrint("筛选数据ItemNotifier：$e");
         return e.id == id;
       }),
     ),

@@ -9,10 +9,10 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  LogManager.init(config: LogManagerConfig.init(throttleTime: 2000));
-  // debugPrint = (String? message, {int? wrapWidth}){
-  //   LogManager.log(message);
-  // };
+  LogManager.init();
+  debugPrint = (String? message, {int? wrapWidth}){
+    LogManager.log(message);
+  };
   runApp(const ProviderScope(child: MyApp()));
 }
 

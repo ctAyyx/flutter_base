@@ -22,6 +22,9 @@ class _LogScreenState extends State<LogScreen> {
     super.initState();
     _logController = LogController();
     _logController.init();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logController.startListener();
+    });
   }
 
   @override
@@ -44,7 +47,7 @@ class _LogScreenState extends State<LogScreen> {
               onPressed: () {
                 _logController.clear();
               },
-              icon: Icon(Icons.clear_all))
+              icon: const Icon(Icons.clear_all))
         ],
       ),
       body: Column(
@@ -106,7 +109,8 @@ class _LogScreenState extends State<LogScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(entity.time, style: TextStyle(color: Colors.grey, fontSize: 10)),
+          Text(entity.time,
+              style: const TextStyle(color: Colors.grey, fontSize: 10)),
           const SizedBox(width: 8),
           Text(
             entity.getRMessage(),
@@ -121,7 +125,7 @@ class _LogScreenState extends State<LogScreen> {
                   onPressed: () async {
                     FsHelper.send2Fs(entity);
                   },
-                  icon: const Icon(Icons.send, color: Colors.white),
+                  icon: const Icon(Icons.share, color: Colors.white),
                 ),
             ],
           ),

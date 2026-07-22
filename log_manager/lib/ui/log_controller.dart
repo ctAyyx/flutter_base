@@ -16,18 +16,21 @@ class LogController {
   late final TextEditingController keyController;
 
   void init() {
-    LogManager.getNotifier()?.startNotifier = true;
+
+
+
+    keyController = TextEditingController();
+    keyController.addListener(onTextChanged);
+  }
+
+  void startListener() {
     listenable = Listenable.merge([
       LogManager.getNotifier(),
       searchFilter,
       levelFilter,
     ]);
-
     listenable.addListener(onSourceChanged);
     filterLogs.value = _applyFilter();
-
-    keyController = TextEditingController();
-    keyController.addListener(onTextChanged);
   }
 
   void onSourceChanged() {
@@ -53,7 +56,7 @@ class LogController {
     if (logs == null) {
       return [];
     }
-    final levelKeys = levelFilter.value;
+    final levelKeys = levelFilter.value.toSet();
     if (levelKeys.isNotEmpty) {
       final list = logs.where((entity) {
         return levelKeys.contains(entity.level);
@@ -74,7 +77,6 @@ class LogController {
 
   void dispose() {
     listenable.removeListener(onSourceChanged);
-    LogManager.getNotifier()?.startNotifier = false;
     keyController.removeListener(onTextChanged);
     keyController.dispose();
   }

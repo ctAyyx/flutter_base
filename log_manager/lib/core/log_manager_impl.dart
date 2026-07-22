@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -77,13 +78,15 @@ class LogManagerImpl implements ILogManager {
 
   @override
   void putLog(msg, {LogType level = LogType.info}) {
-    // final currentList = List<LogEntity>.from(logsNotifier.value);
-    // if (currentList.length >= _config.maxLogs) {
-    //   currentList.removeAt(0);
-    // }
-    // currentList.add(LogEntity("$msg", level));
-    // logsNotifier.value = currentList;
-    logsNotifier.setValue(LogEntity("$msg", level));
+    scheduleMicrotask(() {
+      // final currentList = List<LogEntity>.from(logsNotifier.value);
+      // if (currentList.length >= _config.maxLogs) {
+      //   currentList.removeAt(0);
+      // }
+      // currentList.add(LogEntity("$msg", level));
+      // logsNotifier.value = currentList;
+      logsNotifier.setValue(LogEntity("$msg", level));
+    });
   }
 
   @override

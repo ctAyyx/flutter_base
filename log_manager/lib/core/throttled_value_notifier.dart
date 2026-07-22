@@ -9,7 +9,9 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
   final List<T> _value = [];
   final Set<T> _set = {};
   Timer? _timer;
-  bool startNotifier = false;
+
+  bool _hasPendingChanges = false;
+  bool _isDisposed = false;
 
   ThrottledValueNotifier() {
     if (kFlutterMemoryAllocationsEnabled) {
@@ -19,9 +21,20 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
   }
 
   void _initTimer() {
-    _timer = Timer(Duration(milliseconds: _milTime), () {
+    if (!hasListeners) {
+      _timer?.cancel();
       _timer = null;
-      notifyListeners();
+      return;
+    }
+
+    _timer = Timer(Duration(milliseconds: _milTime), () {
+      if (_isDisposed) return;
+      _timer = null;
+      if (_hasPendingChanges && hasListeners) {
+        _hasPendingChanges = false;
+        _notifier();
+        _initTimer();
+      }
     });
   }
 
@@ -40,11 +53,24 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
   void clear() {
     _value.clear();
     _set.clear();
-    notifyListeners();
+    _hasPendingChanges = false;
+    _timer?.cancel();
+    _timer = null;
+    _notifier();
+  }
+
+  void _notifier() {
+    if (!_isDisposed && hasListeners) {
+      scheduleMicrotask(() {
+        if (!_isDisposed && hasListeners) {
+          notifyListeners();
+        }
+      });
+    }
   }
 
   void setValue(T newValue) {
-    if (_set.contains(newValue)) {
+    if (_isDisposed || _set.contains(newValue)) {
       return;
     }
     if (_value.length >= _maxNum) {
@@ -54,13 +80,17 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
     _value.add(newValue);
     _set.add(newValue);
 
-    if (!startNotifier) {
+    if (!hasListeners) {
+      _hasPendingChanges = false;
       return;
     }
 
     if (_timer?.isActive != true) {
-      notifyListeners();
+      _hasPendingChanges = false;
+      _notifier();
       _initTimer();
+    } else {
+      _hasPendingChanges = true;
     }
   }
 
@@ -69,9 +99,9 @@ class ThrottledValueNotifier<T> extends ChangeNotifier
 
   @override
   void dispose() {
-    startNotifier = false;
     _timer?.cancel();
     _timer = null;
+    _isDisposed = true;
     super.dispose();
   }
 }

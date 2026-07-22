@@ -4,6 +4,7 @@ import 'package:flutter_base/common/common_widget.dart';
 import 'package:flutter_base/riverpod/router/app_router.gr.dart';
 import 'package:flutter_base/riverpod/util/timer_util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:log_sys/core/log_manager.dart';
 
 @RoutePage()
 class SplashPage extends ConsumerStatefulWidget {
@@ -14,7 +15,7 @@ class SplashPage extends ConsumerStatefulWidget {
 }
 
 class _SplashPageState extends ConsumerState<SplashPage> {
-  int _time = 140 * 60 * 1000;
+  int _time = 0;
   TimerUtil? _timer;
 
   @override
@@ -47,36 +48,46 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     final hours = (duration.inHours % 24).toString().padLeft(2, '0');
     final minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
     final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+    LogManager.logW("倒计时:${"$hours:$minutes:$seconds"}");
     return "$hours:$minutes:$seconds";
   }
 
   @override
   Widget build(BuildContext context) {
+    LogManager.logI("===>>>");
     return Scaffold(
-      body: Container(
-        color: Colors.red,
-        child: Column(
-          children: [
-            const SizedBox(height: 48),
-            SubmitButton.general(
-              text: "登录界面",
-              onClick: () {
-                context.pushRoute(LoginRoute());
-              },
-            ),
-            const SizedBox(height: 24),
-            SubmitButton.general(
-              text: "列表界面",
-              onClick: () {
-                context.pushRoute(CreditRoute());
-              },
-            ),
-            const SizedBox(height: 24),
-            const SizedBox(height: 24),
-            SubmitButton.general(text: "测试飞书消息", onClick: () {}),
-            const SizedBox(height: 48),
-            Text("倒计时:${_formatTime(time: _time)}"),
-          ],
+      body: SafeArea(
+        child: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            spacing: 24,
+            children: [
+              SubmitButton.general(
+                text: "登录界面",
+                onClick: () {
+                  context.pushRoute(LoginRoute());
+                },
+              ),
+              SubmitButton.general(
+                text: "列表界面",
+                onClick: () {
+                  context.pushRoute(CreditRoute());
+                },
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  border: BoxBorder.all(color: Colors.green, width: 1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text("倒计时:${_formatTime(time: _time)}"),
+              ),
+            ],
+          ),
         ),
       ),
     );
