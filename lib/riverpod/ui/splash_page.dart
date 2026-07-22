@@ -4,7 +4,7 @@ import 'package:flutter_base/common/common_widget.dart';
 import 'package:flutter_base/riverpod/router/app_router.gr.dart';
 import 'package:flutter_base/riverpod/util/timer_util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:log_sys/core/log_manager.dart';
+import 'package:log_sys/log_export.dart';
 
 @RoutePage()
 class SplashPage extends ConsumerStatefulWidget {
