@@ -32,10 +32,12 @@ class FloatButton {
               child: CircleAvatar(
                 backgroundColor: Colors.blue,
                 child: IconButton(
-                  onPressed: () {
-                    Navigator.of(
+                  onPressed: () async {
+                    hide();
+                    await Navigator.of(
                       context,
                     ).push(MaterialPageRoute(builder: (_) => LogScreen()));
+                    show(overlayState);
                   },
                   icon: const Icon(Icons.ads_click, color: Colors.white),
                 ),
@@ -49,5 +51,8 @@ class FloatButton {
     overlayState.insert(_overlayEntry!);
   }
 
-  static void hide() {}
+  static void hide() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
 }

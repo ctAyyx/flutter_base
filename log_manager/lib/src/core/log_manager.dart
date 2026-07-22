@@ -36,6 +36,10 @@ class LogManager {
     _instance.logW(msg);
   }
 
+  static void putLog(dynamic msg, {LogType level = LogType.info}) {
+    _instance.putLog(msg, level: level);
+  }
+
   static void showFloatButton({OverlayState? overlay}) {
     _instance.showFloatButton(overlay: overlay);
   }

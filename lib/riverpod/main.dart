@@ -8,8 +8,28 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  LogManager.init();
-  debugPrint = (String? message, {int? wrapWidth}){
+  //初始化配置
+  // LogManager.init(
+  //   config: LogManagerConfig.init(
+  //     // 飞书webhook 用来发送日志到飞书
+  //     fsApi: null,
+  //     // 最大日志条数
+  //     maxLogs: 500,
+  //     // 日志刷新间隔
+  //     throttleTime: 1000,
+  //     // 普通日志颜色 蓝色
+  //     logInfoColor: '\x1b[34m',
+  //     // 错误日志颜色 红色
+  //     logErrorColor: '\x1b[31m',
+  //     // 警告日志颜色 黄色
+  //     logWaringColor: '\x1b[33m',
+  //     // Http响应日志颜色 绿色
+  //     httpResponseColor: '\x1b[32m',
+  //     // Http请求日志颜色 青色
+  //     httpRequestColor: '\x1b[36m',
+  //   ),
+  // );
+  debugPrint = (String? message, {int? wrapWidth}) {
     LogManager.log(message);
   };
   runApp(const ProviderScope(child: MyApp()));
@@ -29,6 +49,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       LogManager.showFloatButton(overlay: navigatorKey.currentState?.overlay);
     });
+
   }
 
   @override

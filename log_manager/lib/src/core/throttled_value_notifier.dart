@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 
 class ThrottledValueNotifier<T> extends ChangeNotifier
     implements ValueListenable<List<T>> {
-  int _maxNum = 0;
-  int _milTime = 0;
+  int _maxNum = 500;
+  int _milTime = 1000;
   final List<T> _value = [];
   final Set<T> _set = {};
   Timer? _timer;
